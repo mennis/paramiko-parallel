@@ -15,7 +15,13 @@ When the remote job has completed it will set:
 
 <pre>
     .done to True
-    .message with the dict version of the fio output
+    .message to a NamedTuple that can be sliced or
+        referenced by name:
+
+            status or 0: exitcode as int
+            stdout or 1: stdout as str
+            stderr or 2: stderr as str
+
     .status with the exit code as a boolean
 </pre>
 
