@@ -1,5 +1,4 @@
-from json import loads
-from unittest import TestCase, skip
+from unittest import TestCase
 import time
 from parallelCmd import Cmd
 import vagrant
@@ -39,46 +38,10 @@ class TestCmd(TestCase):
 
         self.assertEqual(cmd.result[1].strip(), 'SunOS')
 
-    # def test_fio(self):
-    #     cmd = Cmd(self.user, self.ip, self.password,  'sudo mkdir -p /ramfs', int(self.port))
-    #     cmd.run()
-    #     cmd.wait()
-    #
-    #     cmd = Cmd(self.user, self.ip, self.password,  'sudo mount -t tmpfs -o size=3G -F tmpfs /ramfs/', int(self.port))
-    #     cmd.run()
-    #     cmd.wait()
-    #
-    #     for _ in range(self.many):
-    #         cmd = Cmd(self.user,
-    #                   self.ip,
-    #                   self.password,
-    #                   "sudo /opt/csw/bin/fio --output-format=json --ioengine=solarisaio "
-    #                   "--end_fsync=1 --direct=0 --fadvise_hint=0 "
-    #                   "--thread --norandommap --randrepeat=0 --refill_buffers "
-    #                   "--rwmixread=70 --runtime=35 --time_based --ramp_time=5 "
-    #                   "--group_reporting --output-format=json --size=2G "
-    #                   "--name='run5;1;randwrite;64k;64' "
-    #                   "--sync=1 --rw=randwrite --bs=64k --iodepth=64",
-    #                   port=int(self.port))
-    #         cmd.run()
-    #         cmd.wait()
-    #         print cmd.command
-    #         print cmd.result
-    #
-    #         self.assertIsInstance(loads(cmd.result[1]), dict)
-
-    # def test_Manyloops(self):
-    #     for _ in range(self.many):
-    #         cmd = Cmd(self.user, self.ip, self.password,  'cat /usr/dict/words', int(self.port))
-    #         cmd.run()
-    #         cmd.wait()
-    #         self.assertEqual(len(cmd.result[1]), 206695)  # TODO: calculate size then check against that
-
     def test_ManyConnections(self):
         connections = []
         for x in range(10):
             connections.append(Cmd(self.user, self.ip, self.password,  'cat /usr/dict/words', int(self.port)))
-            print x
 
         for cmd in connections:
             cmd.run()

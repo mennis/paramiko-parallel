@@ -1,11 +1,21 @@
 from paramiko import SSHClient
 from multiprocessing import Process, Value, Array
 from collections import namedtuple
-from logging import getLogger
+import logging
 import time
 import paramiko
 
-logger = getLogger()
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+Dformatter = logging.Formatter('%(asctime)s %(message)s')
+Vformatter = logging.Formatter('%(name)s: %(levelname)s %(message)s')
+
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+console.setFormatter(Dformatter)
+
+logger.addHandler(console)
 
 Data = namedtuple('Data', ['status', 'stdout', 'stderr'], verbose=False)
 
@@ -94,14 +104,13 @@ class Cmd(object):
     def wait(self):
         """
         This is basicaly join.  It blocks untill the job is done.
-        :return: a dictionary version of the json output
-        :rtype: dict
+        :rtype: NamedTuple
         """
         then = time.time()
         while not self.done:
             time.sleep(.01)
         else:
-            print "waited for {:10.4f} sec".format(time.time() - then)
+            logger.debug("waited for {:10.4f} sec".format(time.time() - then))
         return self.result
 
     def run(self):
@@ -112,7 +121,7 @@ class Cmd(object):
         self.p.start()
         while not self.p.is_alive():
             time.sleep(.1)
-            print "slept not started"
+            logger.debug("slept not started")
         else:
             self.started = True
 
