@@ -25,4 +25,6 @@ When the remote job has completed it will set:
     .status with the exit code as a boolean
 </pre>
 
-and try to store the json data as a dict in .dict .
+Currently stderr and stdout is pinned at a max of 1,000,000 characters. Each command run 
+will allocate this 2MB in buffers for temporary storage.  I'd like to fix this but I'm not
+sure how best to do that while allowing the child to populate the parent.

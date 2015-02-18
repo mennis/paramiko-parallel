@@ -52,7 +52,6 @@ class Cmd(object):
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.command = command
         self.time = float()
-        self.dict = dict()  # fio output in dict format
         self.started = False
         self.__status = Value('i')
         self.__stdout = Array('c', 1000000)
@@ -65,7 +64,9 @@ class Cmd(object):
 
     @staticmethod
     def _read(channelobj):
-        """read until EOF"""
+        """
+        read until EOF
+        """
         buf = channelobj.readline()
         output = str(buf)
         while buf:
@@ -78,7 +79,8 @@ class Cmd(object):
         this private method is executed as a thread
 
         :type status: c_int representing a bool
-        :type message: c_array of char
+        :type stdout: c_array of char
+        :type stderr: c_array of char
         """
 
         self.started = True
@@ -90,7 +92,7 @@ class Cmd(object):
             stderr[i] = str(err[i])
 
         # we must read stderr _before_ stdout
-        # otherwise paramiko loses the stdout data
+        # otherwise paramiko was losing the stdout data
         status = sout.channel.recv_exit_status()
         out = sout.read()
         status += int(status)
